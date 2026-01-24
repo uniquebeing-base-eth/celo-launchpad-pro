@@ -13,6 +13,11 @@ export interface Token {
   vaultPercent?: number;
   volume?: string;
   pair: string;
+  creator?: string;
+  contractAddress?: string;
+  marketCap?: number;
+  totalSupply?: string;
+  holders?: number;
 }
 
 interface TokenCardProps {
