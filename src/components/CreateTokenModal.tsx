@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Upload, AlertTriangle, Check, Info } from "lucide-react";
+import { ArrowLeft, ArrowRight, Upload, AlertTriangle, Check, Info, ChevronDown, ChevronUp, Globe, Send, Twitter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 
 interface CreateTokenModalProps {
@@ -21,6 +22,12 @@ interface TokenData {
   symbol: string;
   logo: string | null;
   description: string;
+  // Social Links
+  twitterLink: string;
+  telegramLink: string;
+  websiteLink: string;
+  farcasterLink: string;
+  // Vault & Fees
   vaultPercent: number;
   lockDuration: "7days" | "1month" | "6months" | "1year";
   creatorFee: number;
@@ -38,11 +45,16 @@ const creatorFees = [1, 2, 3];
 
 const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }: CreateTokenModalProps) => {
   const [step, setStep] = useState<Step>(1);
+  const [showMetadata, setShowMetadata] = useState(false);
   const [tokenData, setTokenData] = useState<TokenData>({
     name: "",
     symbol: "",
     logo: null,
     description: "",
+    twitterLink: "",
+    telegramLink: "",
+    websiteLink: "",
+    farcasterLink: "",
     vaultPercent: 0,
     lockDuration: "1month",
     creatorFee: 1,
@@ -74,11 +86,12 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
 
   const renderStep1 = () => (
     <div className="space-y-5">
-      <h3 className="text-lg font-bold">Step 1 of 3: Token Info</h3>
-      
       <div className="space-y-4">
+        {/* Required Fields */}
         <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">Token Name</label>
+          <label className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
+            Name <span className="text-destructive">*</span>
+          </label>
           <Input
             placeholder="Enter token name"
             value={tokenData.name}
@@ -87,40 +100,124 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
         </div>
 
         <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 flex items-center justify-between">
-            Symbol
-            <span className="text-muted-foreground font-normal">4 chars max</span>
+          <label className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
+            Symbol <span className="text-destructive">*</span>
           </label>
-          <Input
-            placeholder="Enter symbol"
-            value={tokenData.symbol}
-            onChange={(e) => updateField("symbol", e.target.value.toUpperCase().slice(0, 4))}
-            maxLength={4}
-          />
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">Logo</label>
-          <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 transition-colors cursor-pointer">
-            <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-            <p className="text-sm font-medium">Upload Token Logo</p>
-            <p className="text-xs text-muted-foreground">Max 500kb, PNG</p>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+            <Input
+              placeholder="Enter token symbol"
+              value={tokenData.symbol}
+              onChange={(e) => updateField("symbol", e.target.value.toUpperCase().slice(0, 4))}
+              maxLength={4}
+              className="pl-7"
+            />
           </div>
-          <p className="text-xs text-muted-foreground mt-1.5">*No description provided (default)</p>
         </div>
 
         <div>
-          <label className="text-sm font-medium text-foreground mb-1.5 block">
-            Description <span className="text-muted-foreground font-normal">(optional)</span>
+          <label className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
+            Image <span className="text-destructive">*</span>
           </label>
-          <Textarea
-            placeholder="Tell the world about your token."
-            value={tokenData.description}
-            onChange={(e) => updateField("description", e.target.value)}
-            rows={3}
-          />
-          <p className="text-xs text-muted-foreground mt-1.5">No description provided (default)</p>
+          <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 transition-colors cursor-pointer">
+            <Upload className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
+            <p className="text-sm font-medium">SELECT FILE (JPEG / PNG, 1MB MAX)</p>
+          </div>
         </div>
+
+        {/* Divider */}
+        <div className="border-t border-border" />
+
+        {/* Token Metadata Collapsible */}
+        <Collapsible open={showMetadata} onOpenChange={setShowMetadata}>
+          <CollapsibleTrigger className="flex items-center justify-between w-full py-2">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Token Metadata (optional)</span>
+              <Info className="h-4 w-4 text-muted-foreground" />
+            </div>
+            {showMetadata ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            )}
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent className="space-y-4 pt-2">
+            {/* Description */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">
+                Description
+              </label>
+              <Textarea
+                placeholder="Enter token description"
+                value={tokenData.description}
+                onChange={(e) => updateField("description", e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            {/* Social Links */}
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">
+                Telegram Link
+              </label>
+              <div className="relative">
+                <Send className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="https://t.me/..."
+                  value={tokenData.telegramLink}
+                  onChange={(e) => updateField("telegramLink", e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">
+                Website Link
+              </label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="https://..."
+                  value={tokenData.websiteLink}
+                  onChange={(e) => updateField("websiteLink", e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">
+                X (Twitter) Link
+              </label>
+              <div className="relative">
+                <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="https://x.com/..."
+                  value={tokenData.twitterLink}
+                  onChange={(e) => updateField("twitterLink", e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">
+                Farcaster Link
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">🟣</span>
+                <Input
+                  placeholder="https://warpcast.com/..."
+                  value={tokenData.farcasterLink}
+                  onChange={(e) => updateField("farcasterLink", e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <div className="bg-kaboom-orange/10 border border-kaboom-orange/30 rounded-xl p-3 flex items-start gap-2">
           <AlertTriangle className="h-4 w-4 text-kaboom-orange flex-shrink-0 mt-0.5" />
@@ -134,8 +231,6 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
 
   const renderStep2 = () => (
     <div className="space-y-5">
-      <h3 className="text-lg font-bold">Step 2 of 3: Vault & Fees</h3>
-      
       <div className="space-y-6">
         {/* Vault Slider */}
         <div>
@@ -151,7 +246,7 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
                     className={cn(
                       "w-8 h-6 rounded text-xs font-medium transition-colors",
                       tokenData.creatorFee === fee
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-accent/20 text-accent"
                         : "bg-muted text-muted-foreground hover:bg-muted/80"
                     )}
                   >
@@ -204,7 +299,7 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
                 className={cn(
                   "py-2 px-3 rounded-lg text-sm font-medium transition-colors",
                   tokenData.lockDuration === duration.id
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-accent/20 text-accent"
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
                 )}
               >
@@ -236,8 +331,6 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
 
   const renderStep3 = () => (
     <div className="space-y-5">
-      <h3 className="text-lg font-bold">Step 3 of 3: Liquidity Type</h3>
-      
       <div className="space-y-4">
         {/* AMM / Bonding Toggle */}
         <div className="grid grid-cols-2 gap-2 p-1 bg-muted rounded-xl">
@@ -246,66 +339,77 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
             className={cn(
               "py-3 rounded-lg font-semibold transition-colors",
               tokenData.liquidityType === "amm"
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-accent/20 text-accent shadow-sm"
                 : "text-muted-foreground"
             )}
           >
-            AMM
+            Static
           </button>
           <button
             onClick={() => updateField("liquidityType", "bonding")}
             className={cn(
               "py-3 rounded-lg font-semibold transition-colors",
               tokenData.liquidityType === "bonding"
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-accent/20 text-accent shadow-sm"
                 : "text-muted-foreground"
             )}
           >
-            Bonding
+            Dynamic 3%
           </button>
         </div>
 
-        {/* Price Chart Preview */}
-        <div className="bg-muted rounded-xl p-4">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-3xl font-bold">$3.30</span>
-            <span className="text-sm text-muted-foreground">TOKEN/wCELO</span>
+        {/* Fee Tier */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <label className="text-sm font-medium">Fee Tier</label>
+            <Info className="h-4 w-4 text-muted-foreground" />
           </div>
-          {/* Placeholder chart */}
-          <div className="h-32 bg-gradient-to-t from-primary/10 to-transparent rounded-lg relative overflow-hidden">
-            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 40">
-              <path
-                d="M0 35 Q 20 30, 30 25 T 50 20 T 70 15 T 100 5"
-                fill="none"
-                stroke="hsl(var(--primary))"
-                strokeWidth="2"
-              />
-              <path
-                d="M0 35 Q 20 30, 30 25 T 50 20 T 70 15 T 100 5 L 100 40 L 0 40 Z"
-                fill="url(#chartGradient)"
-                opacity="0.3"
-              />
-              <defs>
-                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" />
-                  <stop offset="100%" stopColor="transparent" />
-                </linearGradient>
-              </defs>
-            </svg>
+          <div className="grid grid-cols-3 gap-2">
+            {[1, 2, 3].map((tier) => (
+              <button
+                key={tier}
+                className={cn(
+                  "py-3 rounded-lg font-semibold transition-colors",
+                  tokenData.creatorFee === tier
+                    ? "bg-accent/20 text-accent"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                )}
+                onClick={() => updateField("creatorFee", tier)}
+              >
+                {tier}%
+              </button>
+            ))}
           </div>
+        </div>
+
+        {/* Sniper Tax Duration */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <label className="text-sm font-medium">Sniper Tax Duration</label>
+            <Info className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <Input
+            type="number"
+            placeholder="15"
+            defaultValue={15}
+            className="mb-1"
+          />
+          <p className="text-xs text-muted-foreground">
+            Seconds for sniper tax to decay from starting fee (80%) to ending fee (5%)
+          </p>
         </div>
 
         {/* Info Box */}
         <div className="bg-kaboom-orange/10 border border-kaboom-orange/30 rounded-xl p-3 flex items-start gap-2">
           <AlertTriangle className="h-4 w-4 text-kaboom-orange flex-shrink-0 mt-0.5" />
           <p className="text-xs text-foreground">
-            AMM gives immediate DEX visibility. Bonding curve is optional and internal until migration.
+            Static gives immediate DEX visibility. Dynamic allows fee adjustments post-launch.
           </p>
         </div>
 
         {/* Finalize Section */}
         <div className="border-t border-border pt-4">
-          <h4 className="text-lg font-bold mb-4">Finalize & Launch</h4>
+          <h4 className="text-lg font-bold mb-4">Summary</h4>
           
           <div className="bg-card border border-border rounded-xl p-4 space-y-3">
             <div className="flex items-center gap-3">
@@ -313,12 +417,9 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
                 {tokenData.symbol?.charAt(0) || "?"}
               </div>
               <div>
-                <h5 className="font-bold">{tokenData.symbol || "TOKEN"}</h5>
+                <h5 className="font-bold">${tokenData.symbol || "TOKEN"}</h5>
                 <p className="text-sm text-muted-foreground">{tokenData.name || "Token Name"}</p>
               </div>
-              <Button variant="outline" size="sm" className="ml-auto">
-                <Check className="h-4 w-4 mr-1" /> Claim
-              </Button>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-sm pt-2">
@@ -327,16 +428,16 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
                 <span className="font-medium">{tokenData.vaultPercent}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground"></span>
+                <span className="text-muted-foreground">Pool</span>
                 <span className="font-medium">{100 - tokenData.vaultPercent}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Fee</span>
-                <span className="font-medium">Creator {tokenData.creatorFee}% + Platform 0.4%</span>
+                <span className="font-medium">{tokenData.creatorFee}% + 0.4%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Liquidity</span>
-                <span className="font-medium">{tokenData.liquidityType.toUpperCase()}</span>
+                <span className="text-muted-foreground">Type</span>
+                <span className="font-medium">{tokenData.liquidityType === "amm" ? "Static" : "Dynamic"}</span>
               </div>
             </div>
           </div>
@@ -357,7 +458,7 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
               <ArrowLeft className="h-5 w-5" />
             </button>
             <span className="text-sm text-muted-foreground">
-              Step {step} of 3: {step === 1 ? "Token Info" : step === 2 ? "Vault & Fees" : "Liquidity Type"}
+              Step {step} of 3: {step === 1 ? "Token Info" : step === 2 ? "Vault & Fees" : "Fee Config"}
             </span>
             <button 
               onClick={() => step < 3 && canProceed() && setStep((step + 1) as Step)}
