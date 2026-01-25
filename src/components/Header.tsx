@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Search, X, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import kaboomLogo from "@/assets/kaboom-logo.png";
 import { cn } from "@/lib/utils";
 import { Token } from "./TokenCard";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import HelpTutorialModal from "./HelpTutorialModal";
 
 // Mock tokens for search - in production, this would come from an API/blockchain
 const allTokens: Token[] = [
@@ -27,6 +28,7 @@ const Header = ({ onCreateToken }: HeaderProps) => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   // Search filtering - by token name, symbol, or creator wallet
   const searchResults = useMemo(() => {
@@ -65,13 +67,10 @@ const Header = ({ onCreateToken }: HeaderProps) => {
         <div className="container flex h-16 items-center justify-between gap-2 px-4">
           {/* Logo */}
           <div 
-            className="flex items-center gap-2 cursor-pointer" 
+            className="flex items-center gap-2 cursor-pointer flex-shrink-0" 
             onClick={() => navigate("/")}
           >
-            <img src={kaboomLogo} alt="Kaboom" className="h-10 w-10" />
-            <span className="text-xl font-bold text-gradient-kaboom hidden sm:inline">
-              Kaboom
-            </span>
+            <img src={kaboomLogo} alt="Kaboom" className="h-8 w-8" />
           </div>
 
           {/* Search - Desktop */}
@@ -79,8 +78,8 @@ const Header = ({ onCreateToken }: HeaderProps) => {
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search tokens or wallet address..."
-                className="pl-10 bg-muted border-none"
+                placeholder="Search"
+                className="pl-10 bg-muted border-none rounded-xl"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={handleSearchFocus}
@@ -139,6 +138,16 @@ const Header = ({ onCreateToken }: HeaderProps) => {
               {showSearch ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
             </Button>
 
+            {/* Help Button */}
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full h-9 w-9"
+              onClick={() => setShowHelpModal(true)}
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Button>
+
             {/* Wallet Button - RainbowKit */}
             <ConnectButton 
               chainStatus="icon"
@@ -156,8 +165,8 @@ const Header = ({ onCreateToken }: HeaderProps) => {
               onClick={onCreateToken}
               className="font-semibold"
             >
-              <span className="hidden sm:inline">Create Token</span>
-              <span className="sm:hidden">Create</span>
+              <span className="hidden sm:inline">Create</span>
+              <span className="sm:hidden">+</span>
             </Button>
           </div>
         </div>
@@ -169,7 +178,7 @@ const Header = ({ onCreateToken }: HeaderProps) => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search tokens or wallet..."
-                className="pl-10 bg-muted border-none"
+                className="pl-10 bg-muted border-none rounded-xl"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={handleSearchFocus}
@@ -213,6 +222,11 @@ const Header = ({ onCreateToken }: HeaderProps) => {
         )}
       </header>
 
+      {/* Help Tutorial Modal */}
+      <HelpTutorialModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+      />
     </>
   );
 };
