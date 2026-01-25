@@ -1,13 +1,12 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Wallet, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import kaboomLogo from "@/assets/kaboom-logo.png";
-import WalletModal from "./WalletModal";
-import { useWallet } from "@/hooks/useWallet";
 import { cn } from "@/lib/utils";
 import { Token } from "./TokenCard";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 // Mock tokens for search - in production, this would come from an API/blockchain
 const allTokens: Token[] = [
@@ -26,11 +25,8 @@ interface HeaderProps {
 const Header = ({ onCreateToken }: HeaderProps) => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
-  const [showWalletModal, setShowWalletModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
-  
-  const { address, isConnected, formatAddress } = useWallet();
 
   // Search filtering - by token name, symbol, or creator wallet
   const searchResults = useMemo(() => {
@@ -143,28 +139,15 @@ const Header = ({ onCreateToken }: HeaderProps) => {
               {showSearch ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
             </Button>
 
-            {/* Wallet Button */}
-            {isConnected && address ? (
-              <Button
-                variant="outline"
-                size="sm"
-                className="font-mono text-sm"
-                onClick={() => setShowWalletModal(true)}
-              >
-                <Wallet className="h-4 w-4 mr-2" />
-                {formatAddress(address)}
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowWalletModal(true)}
-              >
-                <Wallet className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Connect Wallet</span>
-                <span className="sm:hidden">Connect</span>
-              </Button>
-            )}
+            {/* Wallet Button - RainbowKit */}
+            <ConnectButton 
+              chainStatus="icon"
+              showBalance={false}
+              accountStatus={{
+                smallScreen: 'avatar',
+                largeScreen: 'full',
+              }}
+            />
 
             {/* Create Token Button */}
             <Button
@@ -230,10 +213,6 @@ const Header = ({ onCreateToken }: HeaderProps) => {
         )}
       </header>
 
-      <WalletModal
-        isOpen={showWalletModal}
-        onClose={() => setShowWalletModal(false)}
-      />
     </>
   );
 };
