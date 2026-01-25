@@ -1,34 +1,14 @@
-import { http, createConfig } from 'wagmi';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { http } from 'wagmi';
 import { celo, celoAlfajores } from 'wagmi/chains';
-import { injected, walletConnect } from 'wagmi/connectors';
 
 // WalletConnect project ID - for production, get one from https://cloud.walletconnect.com
 const projectId = 'a4c23e4c46e9f41b72d19af4e3b36bc1';
 
-// Custom connector metadata
-const metadata = {
-  name: 'Kaboom',
-  description: 'Token Launchpad on Celo',
-  url: 'https://kaboom.app',
-  icons: ['/favicon.png'],
-};
-
-export const config = createConfig({
+export const config = getDefaultConfig({
+  appName: 'Kaboom',
+  projectId,
   chains: [celo, celoAlfajores],
-  connectors: [
-    // Injected wallets (MetaMask, Valora, Celo Extension Wallet, etc.)
-    injected({
-      target: 'metaMask',
-    }),
-    // WalletConnect for mobile wallets
-    walletConnect({
-      projectId,
-      metadata,
-      showQrModal: true,
-    }),
-    // Generic injected connector for other wallets
-    injected(),
-  ],
   transports: {
     [celo.id]: http('https://forno.celo.org'),
     [celoAlfajores.id]: http('https://alfajores-forno.celo-testnet.org'),

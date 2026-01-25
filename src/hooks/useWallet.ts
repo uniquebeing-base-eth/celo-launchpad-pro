@@ -1,13 +1,12 @@
-import { useAccount, useConnect, useDisconnect, useBalance, useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useDisconnect, useBalance, useChainId, useSwitchChain } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { celo } from 'wagmi/chains';
 import { useCallback } from 'react';
 
-export type WalletType = 'metamask' | 'valora' | 'celo' | 'walletconnect' | 'farcaster' | 'ledger';
-
 export function useWallet() {
   const { address, isConnected, isConnecting, connector } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { openConnectModal } = useConnectModal();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   
@@ -15,47 +14,11 @@ export function useWallet() {
     address,
   });
 
-  // Find specific connectors
-  const injectedConnector = connectors.find(c => c.id === 'injected');
-  const walletConnectConnector = connectors.find(c => c.id === 'walletConnect');
-  const metaMaskConnector = connectors.find(c => c.id === 'io.metamask' || c.name === 'MetaMask');
-
-  const connectWallet = useCallback(async (walletType: WalletType) => {
-    try {
-      let connector;
-      
-      switch (walletType) {
-        case 'metamask':
-          // Try MetaMask specific first, then injected
-          connector = metaMaskConnector || injectedConnector;
-          break;
-        case 'valora':
-        case 'celo':
-        case 'farcaster':
-          // These use WalletConnect
-          connector = walletConnectConnector;
-          break;
-        case 'walletconnect':
-          connector = walletConnectConnector;
-          break;
-        case 'ledger':
-          // Ledger also uses WalletConnect for web
-          connector = walletConnectConnector;
-          break;
-        default:
-          connector = injectedConnector || walletConnectConnector;
-      }
-
-      if (connector) {
-        connect({ connector, chainId: celo.id });
-      } else {
-        console.error('No suitable connector found for', walletType);
-      }
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-      throw error;
+  const connectWallet = useCallback(() => {
+    if (openConnectModal) {
+      openConnectModal();
     }
-  }, [connect, injectedConnector, walletConnectConnector, metaMaskConnector]);
+  }, [openConnectModal]);
 
   const ensureCeloNetwork = useCallback(async () => {
     if (chainId !== celo.id && switchChain) {
@@ -80,7 +43,7 @@ export function useWallet() {
   return {
     address,
     isConnected,
-    isConnecting: isConnecting || isPending,
+    isConnecting,
     balance: formattedBalance,
     balanceSymbol: balance?.symbol,
     chainId,

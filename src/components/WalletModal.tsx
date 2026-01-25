@@ -1,24 +1,8 @@
-import { ExternalLink, Wallet, Loader2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useWallet, WalletType } from "@/hooks/useWallet";
-import { cn } from "@/lib/utils";
-
-interface WalletOption {
-  id: WalletType;
-  name: string;
-  icon: string;
-  description: string;
-}
-
-const walletOptions: WalletOption[] = [
-  { id: "valora", name: "Valora", icon: "🟢", description: "Mobile wallet for Celo" },
-  { id: "farcaster", name: "Farcaster Warplet", icon: "🟣", description: "Warplet supports Celo" },
-  { id: "metamask", name: "MetaMask", icon: "🦊", description: "Browser extension" },
-  { id: "celo", name: "Celo Wallet", icon: "🟡", description: "Official Celo wallet" },
-  { id: "walletconnect", name: "WalletConnect", icon: "🔗", description: "Connect any wallet" },
-  { id: "ledger", name: "Ledger", icon: "🔐", description: "Hardware wallet" },
-];
+import { useWallet } from "@/hooks/useWallet";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -29,24 +13,12 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
   const { 
     address, 
     isConnected, 
-    isConnecting, 
     balance, 
     balanceSymbol,
-    connectWallet, 
     disconnect, 
-    formatAddress,
     isOnCelo,
     ensureCeloNetwork,
   } = useWallet();
-
-  const handleConnect = async (walletId: WalletType) => {
-    try {
-      await connectWallet(walletId);
-      // Don't close immediately - wait for connection
-    } catch (error) {
-      console.error('Connection failed:', error);
-    }
-  };
 
   const handleDisconnect = () => {
     disconnect();
@@ -115,29 +87,40 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
             </div>
           </div>
         ) : (
-          <div className="py-2 space-y-2">
-            {walletOptions.map((wallet) => (
-              <button
-                key={wallet.id}
-                onClick={() => handleConnect(wallet.id)}
-                disabled={isConnecting}
-                className={cn(
-                  "w-full flex items-center gap-4 p-4 rounded-xl bg-card/10 hover:bg-card/20 transition-colors text-left",
-                  "disabled:opacity-50 disabled:cursor-not-allowed"
-                )}
-              >
-                <span className="text-2xl">{wallet.icon}</span>
-                <div className="flex-1">
-                  <span className="font-semibold block">{wallet.name}</span>
-                  <span className="text-xs text-muted-foreground">{wallet.description}</span>
-                </div>
-                {isConnecting && (
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                )}
-              </button>
-            ))}
+          <div className="py-4 flex flex-col items-center gap-4">
+            <p className="text-muted-foreground text-sm text-center mb-2">
+              Connect with MetaMask, Valora, Farcaster Warplet, or any WalletConnect-compatible wallet.
+            </p>
             
-            <p className="text-center text-sm text-muted-foreground pt-4">
+            {/* RainbowKit Connect Button */}
+            <ConnectButton.Custom>
+              {({ openConnectModal, mounted }) => {
+                const ready = mounted;
+                
+                return (
+                  <div
+                    {...(!ready && {
+                      'aria-hidden': true,
+                      style: {
+                        opacity: 0,
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                      },
+                    })}
+                    className="w-full"
+                  >
+                    <Button 
+                      onClick={openConnectModal} 
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg"
+                    >
+                      Connect Wallet
+                    </Button>
+                  </div>
+                );
+              }}
+            </ConnectButton.Custom>
+            
+            <p className="text-center text-sm text-muted-foreground pt-2">
               <a 
                 href="https://docs.celo.org/wallet" 
                 target="_blank" 
