@@ -11,7 +11,7 @@ interface TokenTableSectionProps {
   onTokenClick: (token: Token) => void;
 }
 
-type TabType = "top" | "champagne" | "new";
+type TabType = "top" | "new";
 type SortType = "mcap" | "tx";
 
 const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionProps) => {
@@ -22,8 +22,7 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
 
   const tabs = [
     { id: "top" as TabType, label: "Top Boomers" },
-    { id: "champagne" as TabType, label: "Champagne Boomers" },
-    { id: "new" as TabType, label: "New" },
+    { id: "new" as TabType, label: "New Boomers" },
   ];
 
   const handleSort = (column: string) => {
@@ -115,8 +114,8 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-card rounded-2xl overflow-hidden shadow-card">
+        {/* Desktop Table */}
+        <div className="hidden md:block bg-card rounded-2xl overflow-hidden shadow-card">
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-2 px-4 py-3 border-b border-border text-xs font-medium text-muted-foreground">
             <div className="col-span-4">Token</div>
@@ -163,7 +162,7 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
               >
                 {/* Token */}
                 <div className="col-span-4 flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold overflow-hidden relative">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold overflow-hidden relative flex-shrink-0">
                     {token.logo ? (
                       <img src={token.logo} alt={token.name} className="h-full w-full object-cover" />
                     ) : (
@@ -173,18 +172,18 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
                       <img src={kaboomLogo} alt="" className="h-full w-full" />
                     </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-sm">{token.name}</p>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm truncate">{token.name}</p>
                     <p className="text-xs text-muted-foreground">{token.symbol}</p>
                   </div>
                 </div>
 
                 {/* Creator */}
                 <div className="col-span-2 flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs">
+                  <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs flex-shrink-0">
                     👤
                   </div>
-                  <span className="text-sm text-muted-foreground">{token.creator}</span>
+                  <span className="text-sm text-muted-foreground truncate">{token.creator}</span>
                 </div>
 
                 {/* 1h Change */}
@@ -223,6 +222,64 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden space-y-3">
+          {tableData.map((token) => (
+            <div
+              key={token.id}
+              className="bg-card rounded-xl p-4 shadow-card cursor-pointer hover:bg-muted/50 transition-colors"
+              onClick={() => onTokenClick(token)}
+            >
+              {/* Token Header */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold overflow-hidden relative flex-shrink-0">
+                    {token.logo ? (
+                      <img src={token.logo} alt={token.name} className="h-full w-full object-cover" />
+                    ) : (
+                      token.symbol.charAt(0)
+                    )}
+                    <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3">
+                      <img src={kaboomLogo} alt="" className="h-full w-full" />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-semibold">{token.name}</p>
+                    <p className="text-xs text-muted-foreground">{token.symbol}</p>
+                  </div>
+                </div>
+                <div className={cn(
+                  "text-sm font-bold",
+                  parseFloat(token.change24h) >= 0 ? "text-success" : "text-destructive"
+                )}>
+                  {parseFloat(token.change24h) >= 0 ? "+" : ""}{token.change24h}%
+                </div>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-3 gap-3 text-sm">
+                <div>
+                  <p className="text-muted-foreground text-xs">MCap</p>
+                  <p className="font-medium">{token.mcap}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Volume</p>
+                  <p className="font-medium">{token.volume24h}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">1h</p>
+                  <p className={cn(
+                    "font-medium",
+                    parseFloat(token.change1h) >= 0 ? "text-success" : "text-destructive"
+                  )}>
+                    {parseFloat(token.change1h) >= 0 ? "+" : ""}{token.change1h}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
