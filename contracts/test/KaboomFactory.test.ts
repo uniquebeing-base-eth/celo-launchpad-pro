@@ -38,6 +38,19 @@ describe("KaboomFactory", function () {
   }
 
   describe("Token Launch", function () {
+    it("Should use the configured fee token address", async function () {
+      const { owner, wCELO } = await loadFixture(deployFixture);
+
+      const KaboomFeeVault = await ethers.getContractFactory("KaboomFeeVault");
+      const standaloneFeeVault = await KaboomFeeVault.deploy(
+        await wCELO.getAddress(),
+        owner.address,
+        ethers.ZeroAddress
+      );
+
+      expect(await standaloneFeeVault.wCELO()).to.equal(await wCELO.getAddress());
+    });
+
     it("Should launch a token with correct supply", async function () {
       const { factory, creator } = await loadFixture(deployFixture);
 
@@ -83,10 +96,16 @@ describe("KaboomFactory", function () {
 
       const tokens = await factory.getAllTokens();
       const tokenInfo = await factory.getTokenInfo(tokens[0]);
+      const KaboomCreatorVault = await ethers.getContractFactory("KaboomCreatorVault");
+      const KaboomLPVault = await ethers.getContractFactory("KaboomLPVault");
+      const creatorVault = KaboomCreatorVault.attach(tokenInfo.creatorVault);
+      const lpVault = KaboomLPVault.attach(tokenInfo.lpVault);
 
       expect(tokenInfo.creator).to.equal(creator.address);
       expect(tokenInfo.lpVault).to.not.equal(ethers.ZeroAddress);
       expect(tokenInfo.creatorFee).to.equal(200);
+      expect(await creatorVault.token()).to.equal(tokens[0]);
+      expect(await lpVault.token()).to.equal(tokens[0]);
     });
 
     it("Should reject invalid creator fee", async function () {

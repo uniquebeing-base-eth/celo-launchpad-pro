@@ -37,11 +37,12 @@ async function main() {
   }
 
   const platformWallet = process.env.PLATFORM_WALLET || deployer.address;
+  const feeToken = process.env.FEE_TOKEN || networkAddresses.wCELO;
 
   console.log("\n📦 Deploying KaboomFeeVault...");
   const KaboomFeeVault = await ethers.getContractFactory("KaboomFeeVault");
   const feeVault = await KaboomFeeVault.deploy(
-    networkAddresses.wCELO,
+    feeToken,
     platformWallet,
     deployer.address // Factory address placeholder, will be updated
   );
@@ -52,7 +53,7 @@ async function main() {
   console.log("\n📦 Deploying KaboomFactory...");
   const KaboomFactory = await ethers.getContractFactory("KaboomFactory");
   const factory = await KaboomFactory.deploy(
-    networkAddresses.wCELO,
+    feeToken,
     feeVaultAddress,
     platformWallet
   );
@@ -60,12 +61,17 @@ async function main() {
   const factoryAddress = await factory.getAddress();
   console.log("✅ KaboomFactory deployed to:", factoryAddress);
 
-  console.log("\n📦 Deploying KaboomRouter...");
+  console.log("\n� Linking fee vault to factory...");
+  const feeVaultContract = await ethers.getContractAt("KaboomFeeVault", feeVaultAddress);
+  await feeVaultContract.setFactory(factoryAddress);
+  console.log("✅ Fee vault linked to factory.");
+
+  console.log("\n�📦 Deploying KaboomRouter...");
   const KaboomRouter = await ethers.getContractFactory("KaboomRouter");
   const router = await KaboomRouter.deploy(
     factoryAddress,
     feeVaultAddress,
-    networkAddresses.wCELO
+    feeToken
   );
   await router.waitForDeployment();
   const routerAddress = await router.getAddress();
@@ -81,7 +87,8 @@ async function main() {
   console.log("  KaboomFactory: ", factoryAddress);
   console.log("  KaboomRouter:  ", routerAddress);
   console.log("\nConfiguration:");
-  console.log("  wCELO:         ", networkAddresses.wCELO);
+  console.log("  Fee Token:     ", feeToken);
+  console.log("  Default wCELO: ", networkAddresses.wCELO);
   console.log("  Platform Wallet:", platformWallet);
   console.log("\n" + "=".repeat(50));
 

@@ -1,0 +1,288 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IKaboomFactory",
+  "sourceName": "src/interfaces/IKaboomFactory.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "CreatorFeeExceedsMax",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidCreator",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidName",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidSymbol",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidVaultDuration",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroAddress",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "oldFee",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newFee",
+          "type": "uint256"
+        }
+      ],
+      "name": "PlatformFeeUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "oldWallet",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newWallet",
+          "type": "address"
+        }
+      ],
+      "name": "PlatformWalletUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "lpVault",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "feeVault",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalSupply",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "virtualPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "virtualMarketCap",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokenLaunched",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "getAllTokens",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "getTokenInfo",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "lpVault",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "feeVault",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "virtualPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "virtualMarketCap",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "creatorFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "launchTime",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        }
+      ],
+      "name": "getTokensByCreator",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "isKaboomToken",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "creatorFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "vaultDuration",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "twitterLink",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "telegramLink",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "websiteLink",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "farcasterLink",
+          "type": "string"
+        }
+      ],
+      "name": "launchToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

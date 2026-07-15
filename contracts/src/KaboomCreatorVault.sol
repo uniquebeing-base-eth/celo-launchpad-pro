@@ -14,7 +14,7 @@ contract KaboomCreatorVault {
     using SafeERC20 for IERC20;
 
     /// @notice The Kaboom token this vault holds
-    address public immutable token;
+    address public token;
 
     /// @notice The token creator (beneficiary)
     address public immutable creator;
@@ -37,6 +37,9 @@ contract KaboomCreatorVault {
     /// @notice Tokens already claimed
     uint256 public claimed;
 
+    /// @notice Whether the vault has been initialized with the token address
+    bool public initialized;
+
     /// @notice Valid lock durations
     uint256 public constant DURATION_INSTANT = 0;
     uint256 public constant DURATION_7_DAYS = 7 days;
@@ -51,6 +54,8 @@ contract KaboomCreatorVault {
     error Unauthorized();
     error NothingToClaim();
     error InvalidDuration();
+    error ZeroAddress();
+    error AlreadyInitialized();
 
     /**
      * @notice Deploy a new creator vault
@@ -74,13 +79,25 @@ contract KaboomCreatorVault {
             lockDuration_ != DURATION_365_DAYS
         ) revert InvalidDuration();
 
-        token = token_;
         creator = creator_;
         factory = msg.sender;
         createdAt = block.timestamp;
         lockDuration = lockDuration_;
         vestingDuration = lockDuration_; // Same as lock
         totalAllocation = allocation_;
+    }
+
+    /**
+     * @notice Initialize the vault with the launched token address
+     * @param token_ Token address
+     */
+    function initialize(address token_) external {
+        if (msg.sender != factory) revert Unauthorized();
+        if (initialized) revert AlreadyInitialized();
+        if (token_ == address(0)) revert ZeroAddress();
+
+        token = token_;
+        initialized = true;
     }
 
     /**

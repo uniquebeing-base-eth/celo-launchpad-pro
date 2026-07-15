@@ -13,16 +13,19 @@ contract KaboomLPVault {
     using SafeERC20 for IERC20;
 
     /// @notice The Kaboom token this vault is for
-    address public immutable token;
+    address public token;
 
     /// @notice The LP pool address
-    address public immutable pool;
+    address public pool;
 
     /// @notice The factory that deployed this vault
     address public immutable factory;
 
     /// @notice Whether the vault has been initialized with LP
     bool public isLocked;
+
+    /// @notice Whether the vault token and pool have been initialized
+    bool public initialized;
 
     /// @notice Amount of LP tokens locked
     uint256 public lockedBalance;
@@ -34,6 +37,7 @@ contract KaboomLPVault {
     error Unauthorized();
     error AlreadyInitialized();
     error ZeroAmount();
+    error ZeroAddress();
 
     /**
      * @notice Deploy a new LP vault
@@ -45,6 +49,21 @@ contract KaboomLPVault {
         token = token_;
         pool = pool_;
         factory = factory_;
+    }
+
+    /**
+     * @notice Initialize token and pool addresses after deployment
+     * @param token_ Token address
+     * @param pool_ Pool address
+     */
+    function initialize(address token_, address pool_) external {
+        if (msg.sender != factory) revert Unauthorized();
+        if (initialized) revert AlreadyInitialized();
+        if (token_ == address(0)) revert ZeroAddress();
+
+        token = token_;
+        pool = pool_;
+        initialized = true;
     }
 
     /**

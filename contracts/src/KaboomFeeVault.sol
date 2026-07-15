@@ -13,11 +13,11 @@ import "./interfaces/IOwnerAdmins.sol";
 contract KaboomFeeVault is IOwnerAdmins {
     using SafeERC20 for IERC20;
 
-    /// @notice wCELO token address on Celo
+    /// @notice Fee token address on Celo (typically wCELO or USDC)
     address public immutable wCELO;
 
     /// @notice Factory address
-    address public immutable factory;
+    address public factory;
 
     /// @notice Platform wallet for fee claims
     address public platformWallet;
@@ -68,14 +68,14 @@ contract KaboomFeeVault is IOwnerAdmins {
 
     /**
      * @notice Deploy the fee vault
-     * @param wCELO_ wCELO token address
+     * @param feeToken_ Fee token address (wCELO or USDC on Celo)
      * @param platformWallet_ Initial platform wallet
      * @param factory_ Factory address
      */
-    constructor(address wCELO_, address platformWallet_, address factory_) {
-        if (wCELO_ == address(0) || platformWallet_ == address(0)) revert ZeroAddress();
+    constructor(address feeToken_, address platformWallet_, address factory_) {
+        if (feeToken_ == address(0) || platformWallet_ == address(0)) revert ZeroAddress();
         
-        wCELO = wCELO_;
+        wCELO = feeToken_;
         platformWallet = platformWallet_;
         factory = factory_;
         isAdmin[msg.sender] = true;
@@ -184,5 +184,14 @@ contract KaboomFeeVault is IOwnerAdmins {
     function setPlatformWallet(address newWallet) external onlyAdmin {
         if (newWallet == address(0)) revert ZeroAddress();
         platformWallet = newWallet;
+    }
+
+    /**
+     * @notice Set factory address after deployment
+     * @param newFactory New factory address
+     */
+    function setFactory(address newFactory) external onlyAdmin {
+        if (newFactory == address(0)) revert ZeroAddress();
+        factory = newFactory;
     }
 }

@@ -59,18 +59,6 @@ contract KaboomFactory is IKaboomFactory {
     /// @notice Token info mapping
     mapping(address => TokenInfo) public tokenInfo;
 
-    /// @notice Emitted on token launch
-    event TokenLaunched(
-        address indexed token,
-        address indexed creator,
-        address lpVault,
-        address creatorVault,
-        uint256 totalSupply,
-        uint256 virtualPrice,
-        uint256 virtualMarketCap,
-        uint256 timestamp
-    );
-
     /// @notice Emitted when social links are set
     event TokenMetadataSet(
         address indexed token,
@@ -151,6 +139,9 @@ contract KaboomFactory is IKaboomFactory {
         );
 
         token = address(kaboomToken);
+
+        creatorVault.initialize(token);
+        lpVault.initialize(token, address(0));
 
         // Register token with fee vault
         KaboomFeeVault(feeVault).registerToken(token, creator, creatorFee);
