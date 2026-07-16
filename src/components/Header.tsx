@@ -20,24 +20,26 @@ const Header = ({ onCreateToken }: HeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const { tokens: allTokens } = useKaboomTokens();
 
   // Search filtering - by token name, symbol, or creator wallet
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    
+
     const query = searchQuery.toLowerCase();
     const isWalletSearch = query.startsWith("0x") && query.length > 10;
-    
-    return allTokens.filter((token) => {
+
+    return (allTokens || []).filter((token) => {
       if (isWalletSearch) {
-        return token.creator?.toLowerCase().includes(query);
+        return token.creator?.toLowerCase().includes(query) ||
+          token.address?.toLowerCase().includes(query);
       }
       return (
         token.name.toLowerCase().includes(query) ||
         token.symbol.toLowerCase().includes(query)
       );
-    });
-  }, [searchQuery]);
+    }) as unknown as Token[];
+  }, [searchQuery, allTokens]);
 
   const handleSearchFocus = () => setShowResults(true);
   const handleSearchBlur = () => {
