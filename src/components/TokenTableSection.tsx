@@ -295,6 +295,12 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
             </div>
           ))}
         </div>
+
+        {sortedData.length === 0 && (
+          <div className="text-center py-10 text-muted-foreground text-sm">
+            No tokens launched yet. Be the first to boom 💥
+          </div>
+        )}
       </div>
     </section>
   );
