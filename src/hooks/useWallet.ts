@@ -55,6 +55,6 @@ export function useWallet() {
     disconnect,
     ensureCeloNetwork,
     formatAddress,
-    isOnCelo: chainId === celo.id,
+    isOnCelo: chainId === celo.id || chainId === celoSepolia.id,
   };
 }
