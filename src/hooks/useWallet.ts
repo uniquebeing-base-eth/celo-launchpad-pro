@@ -22,11 +22,13 @@ export function useWallet() {
   }, [openConnectModal]);
 
   const ensureCeloNetwork = useCallback(async () => {
-    if (chainId !== celo.id && switchChain) {
+    const validChains = [celo.id, celoSepolia.id];
+    if (!validChains.includes(chainId) && switchChain) {
       try {
-        switchChain({ chainId: celo.id });
+        // Prefer testnet (Celo Sepolia) since that's where contracts are deployed.
+        switchChain({ chainId: celoSepolia.id });
       } catch (error) {
-        console.error('Failed to switch to Celo:', error);
+        console.error('Failed to switch to Celo Sepolia:', error);
       }
     }
   }, [chainId, switchChain]);
