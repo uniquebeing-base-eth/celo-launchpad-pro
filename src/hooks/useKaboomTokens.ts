@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePublicClient } from 'wagmi';
-import { celoAlfajores } from 'wagmi/chains';
+import { celoSepolia } from '@/lib/wagmi';
 import { CONTRACTS, KABOOM_FACTORY_ABI } from '@/lib/wagmi';
 import { formatUnits } from 'viem';
 import { ERC20_ABI } from '@/lib/wagmi';
@@ -33,7 +33,7 @@ export function useKaboomTokens() {
   const [tokens, setTokens] = useState<KaboomTokenData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const publicClient = usePublicClient({ chainId: celoAlfajores.id }) as any;
+  const publicClient = usePublicClient({ chainId: celoSepolia.id }) as any;
 
   useEffect(() => {
     if (!publicClient) return;

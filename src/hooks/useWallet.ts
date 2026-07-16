@@ -1,6 +1,7 @@
 import { useAccount, useDisconnect, useBalance, useChainId, useSwitchChain } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { celo } from 'wagmi/chains';
+import { celoSepolia } from '@/lib/wagmi';
 import { useCallback } from 'react';
 
 export function useWallet() {
@@ -21,11 +22,13 @@ export function useWallet() {
   }, [openConnectModal]);
 
   const ensureCeloNetwork = useCallback(async () => {
-    if (chainId !== celo.id && switchChain) {
+    const validChains = [celo.id, celoSepolia.id];
+    if (!validChains.includes(chainId as any) && switchChain) {
       try {
-        switchChain({ chainId: celo.id });
+        // Prefer testnet (Celo Sepolia) since that's where contracts are deployed.
+        switchChain({ chainId: celoSepolia.id });
       } catch (error) {
-        console.error('Failed to switch to Celo:', error);
+        console.error('Failed to switch to Celo Sepolia:', error);
       }
     }
   }, [chainId, switchChain]);
@@ -52,6 +55,6 @@ export function useWallet() {
     disconnect,
     ensureCeloNetwork,
     formatAddress,
-    isOnCelo: chainId === celo.id,
+    isOnCelo: chainId === celo.id || chainId === celoSepolia.id,
   };
 }

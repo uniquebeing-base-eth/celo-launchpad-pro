@@ -1,23 +1,41 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
-import { celo, celoAlfajores } from 'wagmi/chains';
+import { celo } from 'wagmi/chains';
+import { defineChain } from 'viem';
 
 // WalletConnect project ID - for production, get one from https://cloud.walletconnect.com
 const projectId = 'a4c23e4c46e9f41b72d19af4e3b36bc1';
 
+// Celo Sepolia testnet (chain ID 11142220) — the current active Celo testnet.
+// Alfajores (44787) has been deprecated in favor of Celo Sepolia.
+export const celoSepolia = defineChain({
+  id: 11142220,
+  name: 'Celo Sepolia',
+  nativeCurrency: { name: 'CELO', symbol: 'CELO', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://forno.celo-sepolia.celo-testnet.org'] },
+    public: { http: ['https://forno.celo-sepolia.celo-testnet.org'] },
+  },
+  blockExplorers: {
+    default: { name: 'Blockscout', url: 'https://celo-sepolia.blockscout.com' },
+  },
+  testnet: true,
+});
+
 export const config = getDefaultConfig({
   appName: 'Kaboom',
   projectId,
-  chains: [celo, celoAlfajores],
+  // Sepolia first so it's the default suggested network on testnet builds.
+  chains: [celoSepolia, celo],
   transports: {
+    [celoSepolia.id]: http('https://forno.celo-sepolia.celo-testnet.org'),
     [celo.id]: http('https://forno.celo.org'),
-    [celoAlfajores.id]: http('https://alfajores-forno.celo-testnet.org'),
   },
 });
 
 // Export chain info for easy access
 export const CELO_CHAIN = celo;
-export const CELO_TESTNET = celoAlfajores;
+export const CELO_TESTNET = celoSepolia;
 
 // Contract addresses - updated for the Celo Sepolia deployment with AMM/Pool support
 export const CONTRACTS = {
