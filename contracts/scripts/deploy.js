@@ -38,7 +38,8 @@ async function main() {
   const factory = await KaboomFactory.deploy(
     networkAddresses.wCELO,
     feeVaultAddress,
-    platformWallet
+    platformWallet,
+    process.env.USDC_ADDRESS || "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B"
   );
   await factory.waitForDeployment();
   const factoryAddress = await factory.getAddress();
@@ -49,7 +50,8 @@ async function main() {
   const router = await KaboomRouter.deploy(
     factoryAddress,
     feeVaultAddress,
-    networkAddresses.wCELO
+    networkAddresses.wCELO,
+    process.env.USDC_ADDRESS || "0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B"
   );
   await router.waitForDeployment();
   const routerAddress = await router.getAddress();

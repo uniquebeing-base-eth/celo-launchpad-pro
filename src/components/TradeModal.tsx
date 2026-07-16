@@ -68,7 +68,7 @@ const TradeModal = ({ isOpen, onClose, token, walletConnected, onConnectWallet }
                 className="border-none bg-transparent text-2xl font-bold p-0 h-auto focus-visible:ring-0"
               />
               <div className="bg-card rounded-lg px-3 py-2 font-semibold text-sm flex items-center gap-2">
-                {isBuying ? "wCELO" : token.symbol}
+                {isBuying ? "USDC" : token.symbol}
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@ const TradeModal = ({ isOpen, onClose, token, walletConnected, onConnectWallet }
                 {estimatedOutput > 0 ? estimatedOutput.toFixed(4) : "0.00"}
               </span>
               <div className="bg-card rounded-lg px-3 py-2 font-semibold text-sm flex items-center gap-2">
-                {isBuying ? token.symbol : "wCELO"}
+                {isBuying ? token.symbol : "USDC"}
               </div>
             </div>
           </div>
@@ -103,11 +103,11 @@ const TradeModal = ({ isOpen, onClose, token, walletConnected, onConnectWallet }
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Price</span>
-                <span className="font-medium">1 {token.symbol} = {token.price.toFixed(4)} wCELO</span>
+                <span className="font-medium">1 {token.symbol} = {token.price.toFixed(4)} USDC</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Fee (1.4%)</span>
-                <span className="font-medium">{fee.toFixed(4)} wCELO</span>
+                <span className="font-medium">{fee.toFixed(4)} USDC</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground flex items-center gap-1">

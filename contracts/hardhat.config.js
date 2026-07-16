@@ -54,6 +54,7 @@ module.exports = {
     ],
   },
   paths: {
+    root: __dirname,
     sources: "./src",
     tests: "./test",
     cache: "./cache",

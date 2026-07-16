@@ -68,7 +68,7 @@ const PriceChart = ({ tokenSymbol, className }: PriceChartProps) => {
     <div className={cn("bg-card rounded-2xl p-4 shadow-card", className)}>
       {/* Timeframe Selector */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-lg">{tokenSymbol} / wCELO</h3>
+        <h3 className="font-bold text-lg">{tokenSymbol} / USDC</h3>
         <div className="flex gap-1 bg-muted rounded-lg p-1">
           {(["24h", "7d", "1m"] as TimeFrame[]).map((tf) => (
             <button

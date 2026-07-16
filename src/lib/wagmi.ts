@@ -19,12 +19,13 @@ export const config = getDefaultConfig({
 export const CELO_CHAIN = celo;
 export const CELO_TESTNET = celoAlfajores;
 
-// Contract addresses - UPDATE AFTER DEPLOYMENT
+// Contract addresses - updated for the Celo Sepolia deployment with AMM/Pool support
 export const CONTRACTS = {
-  tokenFactory: '0x0000000000000000000000000000000000000000', // Replace after deploy
-  router: '0x0000000000000000000000000000000000000000', // Replace after deploy
-  feeVault: '0x0000000000000000000000000000000000000000', // Replace after deploy
-  wCELO: '0x471EcE3750Da237f93B8E339c536989b8978a438', // Official CELO address
+  tokenFactory: '0x7da993A2294ddF3Da972925166B78104C5A3a52D',
+  router: '0xF60E8cd069C75b306804D4B49aDd7Dbcda956230',
+  feeVault: '0x861500b33E8AaF9C690AC1661aA259ddb08EB479',
+  wCELO: '0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9',
+  usdc: '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B',
 } as const;
 
 // Token constants

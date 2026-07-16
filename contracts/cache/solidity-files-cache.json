@@ -1,46 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/workspaces/celo-launchpad-pro/contracts/src/KaboomCreatorVault.sol": {
-      "lastModificationDate": 1784157090919,
-      "contentHash": "b6540659f706f55a587d8fe5574d180c",
-      "sourceName": "src/KaboomCreatorVault.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KaboomCreatorVault"
-      ]
-    },
     "/workspaces/celo-launchpad-pro/contracts/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
       "lastModificationDate": 1784155478169,
       "contentHash": "9261adf6457863de3e9892f51317ec89",
@@ -269,208 +229,6 @@
         "IERC165"
       ]
     },
-    "/workspaces/celo-launchpad-pro/contracts/src/KaboomFactory.sol": {
-      "lastModificationDate": 1784157502252,
-      "contentHash": "b2888d6e24b367aa03a2cc25cbcfa760",
-      "sourceName": "src/KaboomFactory.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "./KaboomToken.sol",
-        "./KaboomLPVault.sol",
-        "./KaboomCreatorVault.sol",
-        "./KaboomFeeVault.sol",
-        "./interfaces/IKaboomFactory.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KaboomFactory"
-      ]
-    },
-    "/workspaces/celo-launchpad-pro/contracts/src/KaboomToken.sol": {
-      "lastModificationDate": 1784156642666,
-      "contentHash": "6b4277b8a765bbe0d330ae3a3062ddba",
-      "sourceName": "src/KaboomToken.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KaboomToken"
-      ]
-    },
-    "/workspaces/celo-launchpad-pro/contracts/src/KaboomLPVault.sol": {
-      "lastModificationDate": 1784157090919,
-      "contentHash": "fbf250a1a0bbd6a67b7a7ef314f7e2cc",
-      "sourceName": "src/KaboomLPVault.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KaboomLPVault"
-      ]
-    },
-    "/workspaces/celo-launchpad-pro/contracts/src/KaboomFeeVault.sol": {
-      "lastModificationDate": 1784157090919,
-      "contentHash": "bb96b503af3efbc7223ae3fe6b62362b",
-      "sourceName": "src/KaboomFeeVault.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "./interfaces/IOwnerAdmins.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KaboomFeeVault"
-      ]
-    },
-    "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IKaboomFactory.sol": {
-      "lastModificationDate": 1784154373587,
-      "contentHash": "aca30ebc68c5cbf8a12ad1fe176a1a36",
-      "sourceName": "src/interfaces/IKaboomFactory.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "IKaboomFactory"
-      ]
-    },
     "/workspaces/celo-launchpad-pro/contracts/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
       "lastModificationDate": 1784155477542,
       "contentHash": "d15c4d05583536e080f1960ab282772d",
@@ -628,125 +386,6 @@
         "IERC20Metadata"
       ]
     },
-    "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IOwnerAdmins.sol": {
-      "lastModificationDate": 1784154373587,
-      "contentHash": "d414c226600ca9c5938007884415a93a",
-      "sourceName": "src/interfaces/IOwnerAdmins.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "IOwnerAdmins"
-      ]
-    },
-    "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IKaboomToken.sol": {
-      "lastModificationDate": 1784154373587,
-      "contentHash": "81e25ca2f3151e16304ad6de07323542",
-      "sourceName": "src/interfaces/IKaboomToken.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "IKaboomToken"
-      ]
-    },
-    "/workspaces/celo-launchpad-pro/contracts/src/KaboomRouter.sol": {
-      "lastModificationDate": 1784156642666,
-      "contentHash": "4a44216a9af3ce08e4dcb4860020478d",
-      "sourceName": "src/KaboomRouter.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "viaIR": true,
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
-        "./interfaces/IKaboomFactory.sol",
-        "./KaboomFeeVault.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KaboomRouter"
-      ]
-    },
     "/workspaces/celo-launchpad-pro/contracts/node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
       "lastModificationDate": 1784155478412,
       "contentHash": "6e5efb502dd6652d12ad15eea2c5bdf4",
@@ -823,8 +462,371 @@
         "StorageSlot"
       ]
     },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomCreatorVault.sol": {
+      "lastModificationDate": 1784159069814,
+      "contentHash": "b6540659f706f55a587d8fe5574d180c",
+      "sourceName": "src/KaboomCreatorVault.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomCreatorVault"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomFactory.sol": {
+      "lastModificationDate": 1784204192196,
+      "contentHash": "0c5aca544cdfd6d7b0410c9c95bad34a",
+      "sourceName": "src/KaboomFactory.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "./KaboomToken.sol",
+        "./KaboomLPVault.sol",
+        "./KaboomCreatorVault.sol",
+        "./KaboomFeeVault.sol",
+        "./KaboomPool.sol",
+        "./interfaces/IKaboomFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomFactory"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomToken.sol": {
+      "lastModificationDate": 1784159069814,
+      "contentHash": "6b4277b8a765bbe0d330ae3a3062ddba",
+      "sourceName": "src/KaboomToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomToken"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomLPVault.sol": {
+      "lastModificationDate": 1784159069814,
+      "contentHash": "fbf250a1a0bbd6a67b7a7ef314f7e2cc",
+      "sourceName": "src/KaboomLPVault.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomLPVault"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomFeeVault.sol": {
+      "lastModificationDate": 1784159069814,
+      "contentHash": "bb96b503af3efbc7223ae3fe6b62362b",
+      "sourceName": "src/KaboomFeeVault.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "./interfaces/IOwnerAdmins.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomFeeVault"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IKaboomFactory.sol": {
+      "lastModificationDate": 1784204192179,
+      "contentHash": "797adfebeec91fd05707ef606a7e35af",
+      "sourceName": "src/interfaces/IKaboomFactory.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IKaboomFactory"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IOwnerAdmins.sol": {
+      "lastModificationDate": 1784159069814,
+      "contentHash": "d414c226600ca9c5938007884415a93a",
+      "sourceName": "src/interfaces/IOwnerAdmins.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IOwnerAdmins"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IKaboomToken.sol": {
+      "lastModificationDate": 1784159069814,
+      "contentHash": "81e25ca2f3151e16304ad6de07323542",
+      "sourceName": "src/interfaces/IKaboomToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IKaboomToken"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomRouter.sol": {
+      "lastModificationDate": 1784204238855,
+      "contentHash": "c4cbc88aff39e98c402fff895aa06d79",
+      "sourceName": "src/KaboomRouter.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "./interfaces/IKaboomFactory.sol",
+        "./KaboomFeeVault.sol",
+        "./KaboomPool.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomRouter"
+      ]
+    },
     "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IKaboomFeeVault.sol": {
-      "lastModificationDate": 1784154373587,
+      "lastModificationDate": 1784159069814,
       "contentHash": "c0ef81888eee326d9b77eab6cc411cad",
       "sourceName": "src/interfaces/IKaboomFeeVault.sol",
       "solcConfig": {
@@ -861,7 +863,7 @@
       ]
     },
     "/workspaces/celo-launchpad-pro/contracts/src/interfaces/IKaboomLPVault.sol": {
-      "lastModificationDate": 1784154373587,
+      "lastModificationDate": 1784159069814,
       "contentHash": "2ebf6caf94740f01d012bcc38cc82bb5",
       "sourceName": "src/interfaces/IKaboomLPVault.sol",
       "solcConfig": {
@@ -895,6 +897,47 @@
       ],
       "artifacts": [
         "IKaboomLPVault"
+      ]
+    },
+    "/workspaces/celo-launchpad-pro/contracts/src/KaboomPool.sol": {
+      "lastModificationDate": 1784204178140,
+      "contentHash": "f7d9fd00525e2bf89755e6d3e8337586",
+      "sourceName": "src/KaboomPool.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "viaIR": true,
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KaboomPool"
       ]
     }
   }

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./interfaces/IKaboomFactory.sol";
 import "./KaboomFeeVault.sol";
+import "./KaboomPool.sol";
 
 /**
  * @title KaboomRouter
@@ -23,6 +24,9 @@ contract KaboomRouter is ReentrancyGuard {
 
     /// @notice wCELO address
     address public immutable wCELO;
+
+    /// @notice USDC address
+    address public immutable usdc;
 
     /// @notice AMM pool interface (simplified - integrate with Ubeswap/Curve)
     /// In production, this would integrate with actual DEX
@@ -58,10 +62,11 @@ contract KaboomRouter is ReentrancyGuard {
      * @param feeVault_ Fee vault address
      * @param wCELO_ wCELO address
      */
-    constructor(address factory_, address feeVault_, address wCELO_) {
+    constructor(address factory_, address feeVault_, address wCELO_, address usdc_) {
         factory = factory_;
         feeVault = feeVault_;
         wCELO = wCELO_;
+        usdc = usdc_;
     }
 
     /**
@@ -79,22 +84,16 @@ contract KaboomRouter is ReentrancyGuard {
         if (!IKaboomFactory(factory).isKaboomToken(token)) revert InvalidToken();
         if (amountIn == 0) revert ZeroAmount();
 
-        // Transfer wCELO from user
-        IERC20(wCELO).safeTransferFrom(msg.sender, address(this), amountIn);
-
         // Collect fees (platform + creator)
+        IERC20(wCELO).safeTransferFrom(msg.sender, address(this), amountIn);
         IERC20(wCELO).approve(feeVault, amountIn);
         KaboomFeeVault(feeVault).collectFees(token, amountIn);
 
-        // Calculate amount after fees
-        uint256 platformFee = (amountIn * 40) / 10000; // 0.4%
-        (,,,,,uint256 creatorFeeBps,) = IKaboomFactory(factory).getTokenInfo(token);
-        uint256 creatorFee = (amountIn * creatorFeeBps) / 10000;
-        uint256 amountAfterFees = amountIn - platformFee - creatorFee;
+        address pool = IKaboomFactory(factory).getPoolForToken(token);
+        if (pool == address(0)) revert InvalidToken();
 
-        // Execute swap on AMM (simplified - integrate with actual DEX)
-        // In production: call Ubeswap/Curve router
-        amountOut = _executeSwap(token, amountAfterFees, true);
+        IERC20(usdc).approve(pool, amountIn);
+        amountOut = KaboomPool(pool).buyToken(amountIn, minAmountOut);
 
         if (amountOut < minAmountOut) revert SlippageExceeded();
 
@@ -124,17 +123,16 @@ contract KaboomRouter is ReentrancyGuard {
         if (!IKaboomFactory(factory).isKaboomToken(token)) revert InvalidToken();
         if (amountIn == 0) revert ZeroAmount();
 
-        // Transfer tokens from user
+        address pool = IKaboomFactory(factory).getPoolForToken(token);
+        if (pool == address(0)) revert InvalidToken();
+
         IERC20(token).safeTransferFrom(msg.sender, address(this), amountIn);
+        IERC20(token).approve(pool, amountIn);
+        uint256 grossAmountOut = KaboomPool(pool).sellToken(amountIn, minAmountOut);
 
-        // Execute swap on AMM
-        uint256 grossAmountOut = _executeSwap(token, amountIn, false);
-
-        // Collect fees from output
         IERC20(wCELO).approve(feeVault, grossAmountOut);
         KaboomFeeVault(feeVault).collectFees(token, grossAmountOut);
 
-        // Calculate amount after fees
         uint256 platformFee = (grossAmountOut * 40) / 10000;
         (,,,,,uint256 creatorFeeBps,) = IKaboomFactory(factory).getTokenInfo(token);
         uint256 creatorFee = (grossAmountOut * creatorFeeBps) / 10000;
@@ -164,14 +162,17 @@ contract KaboomRouter is ReentrancyGuard {
         address token,
         uint256 amountIn
     ) external view returns (uint256 amountOut, uint256 priceImpact) {
-        // Calculate fees
+        address pool = IKaboomFactory(factory).getPoolForToken(token);
+        if (pool == address(0)) return (0, 0);
+
         uint256 platformFee = (amountIn * 40) / 10000;
         (,,,,,uint256 creatorFeeBps,) = IKaboomFactory(factory).getTokenInfo(token);
         uint256 creatorFee = (amountIn * creatorFeeBps) / 10000;
         uint256 amountAfterFees = amountIn - platformFee - creatorFee;
 
-        // Get quote from AMM (simplified)
-        amountOut = _getSwapQuote(token, amountAfterFees, true);
+        (uint256 reserveToken, uint256 reserveUsdc) = KaboomPool(pool).getReserves();
+        uint256 feeAdjusted = (amountAfterFees * 997) / 1000;
+        amountOut = (reserveToken * feeAdjusted) / (reserveUsdc + feeAdjusted);
         priceImpact = _calculatePriceImpact(token, amountIn, true);
 
         return (amountOut, priceImpact);
@@ -188,10 +189,11 @@ contract KaboomRouter is ReentrancyGuard {
         address token,
         uint256 amountIn
     ) external view returns (uint256 amountOut, uint256 priceImpact) {
-        // Get gross output from AMM
+        address pool = IKaboomFactory(factory).getPoolForToken(token);
+        if (pool == address(0)) return (0, 0);
+
         uint256 grossAmountOut = _getSwapQuote(token, amountIn, false);
 
-        // Calculate fees
         uint256 platformFee = (grossAmountOut * 40) / 10000;
         (,,,,,uint256 creatorFeeBps,) = IKaboomFactory(factory).getTokenInfo(token);
         uint256 creatorFee = (grossAmountOut * creatorFeeBps) / 10000;
@@ -204,39 +206,20 @@ contract KaboomRouter is ReentrancyGuard {
 
     // ============ Internal Functions ============
 
-    /**
-     * @dev Execute swap on AMM - PLACEHOLDER
-     * In production, integrate with Ubeswap/Curve
-     */
-    function _executeSwap(
-        address token,
-        uint256 amountIn,
-        bool isBuy
-    ) internal returns (uint256) {
-        // TODO: Integrate with actual DEX
-        // This is a placeholder - returns simplified calculation
-        if (isBuy) {
-            // wCELO -> Token
-            return amountIn * 1000; // Simplified
-        } else {
-            // Token -> wCELO
-            return amountIn / 1000; // Simplified
-        }
-    }
-
-    /**
-     * @dev Get swap quote from AMM - PLACEHOLDER
-     */
     function _getSwapQuote(
         address token,
         uint256 amountIn,
         bool isBuy
     ) internal view returns (uint256) {
-        // TODO: Get actual quote from DEX
+        address pool = IKaboomFactory(factory).getPoolForToken(token);
+        if (pool == address(0)) return 0;
+        (uint256 reserveToken, uint256 reserveUsdc) = KaboomPool(pool).getReserves();
         if (isBuy) {
-            return amountIn * 1000;
+            uint256 feeAdjusted = (amountIn * 997) / 1000;
+            return (reserveToken * feeAdjusted) / (reserveUsdc + feeAdjusted);
         } else {
-            return amountIn / 1000;
+            uint256 feeAdjusted = (amountIn * 997) / 1000;
+            return (reserveUsdc * feeAdjusted) / (reserveToken + feeAdjusted);
         }
     }
 
@@ -258,8 +241,12 @@ contract KaboomRouter is ReentrancyGuard {
         uint256 amountIn,
         bool isBuy
     ) internal view returns (uint256) {
-        // TODO: Calculate actual price impact from pool reserves
-        // Simplified: larger trades = more impact
-        return (amountIn / 10**18) * 10; // 0.1% per 1 wCELO
+        address pool = IKaboomFactory(factory).getPoolForToken(token);
+        if (pool == address(0)) return 0;
+        (uint256 reserveToken, uint256 reserveUsdc) = KaboomPool(pool).getReserves();
+        uint256 poolSize = isBuy ? reserveUsdc : reserveToken;
+        if (poolSize == 0) return 0;
+        uint256 impact = (amountIn * 10000) / poolSize;
+        return impact > 10000 ? 10000 : impact;
     }
 }

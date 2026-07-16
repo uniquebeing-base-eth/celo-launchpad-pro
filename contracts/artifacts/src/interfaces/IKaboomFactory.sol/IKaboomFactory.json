@@ -147,6 +147,25 @@
           "type": "address"
         }
       ],
+      "name": "getPoolForToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
       "name": "getTokenInfo",
       "outputs": [
         {

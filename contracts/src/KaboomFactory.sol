@@ -7,6 +7,7 @@ import "./KaboomToken.sol";
 import "./KaboomLPVault.sol";
 import "./KaboomCreatorVault.sol";
 import "./KaboomFeeVault.sol";
+import "./KaboomPool.sol";
 import "./interfaces/IKaboomFactory.sol";
 
 /**
@@ -25,6 +26,9 @@ contract KaboomFactory is IKaboomFactory {
 
     /// @notice Platform wallet
     address public platformWallet;
+
+    /// @notice USDC token address used for trading pairs
+    address public immutable usdc;
 
     /// @notice Virtual starting price: $0.0000005 (in 18 decimals)
     uint256 public constant VIRTUAL_PRICE = 5 * 10**11; // 0.0000005 * 10^18
@@ -59,6 +63,9 @@ contract KaboomFactory is IKaboomFactory {
     /// @notice Token info mapping
     mapping(address => TokenInfo) public tokenInfo;
 
+    /// @notice Pool for each token
+    mapping(address => address) public pools;
+
     /// @notice Emitted when social links are set
     event TokenMetadataSet(
         address indexed token,
@@ -74,14 +81,16 @@ contract KaboomFactory is IKaboomFactory {
      * @param feeVault_ Fee vault address
      * @param platformWallet_ Platform wallet for fees
      */
-    constructor(address wCELO_, address feeVault_, address platformWallet_) {
+    constructor(address wCELO_, address feeVault_, address platformWallet_, address usdc_) {
         if (wCELO_ == address(0)) revert ZeroAddress();
         if (feeVault_ == address(0)) revert ZeroAddress();
         if (platformWallet_ == address(0)) revert ZeroAddress();
+        if (usdc_ == address(0)) revert ZeroAddress();
 
         wCELO = wCELO_;
         feeVault = feeVault_;
         platformWallet = platformWallet_;
+        usdc = usdc_;
     }
 
     /**
@@ -142,6 +151,9 @@ contract KaboomFactory is IKaboomFactory {
 
         creatorVault.initialize(token);
         lpVault.initialize(token, address(0));
+
+        KaboomPool pool = new KaboomPool(token, usdc, address(this));
+        pools[token] = address(pool);
 
         // Register token with fee vault
         KaboomFeeVault(feeVault).registerToken(token, creator, creatorFee);
@@ -246,5 +258,9 @@ contract KaboomFactory is IKaboomFactory {
             info.websiteLink,
             info.farcasterLink
         );
+    }
+
+    function getPoolForToken(address token) external view returns (address pool) {
+        return pools[token];
     }
 }

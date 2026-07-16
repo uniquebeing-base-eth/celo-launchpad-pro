@@ -95,4 +95,6 @@ interface IKaboomFactory {
         uint256 creatorFee,
         uint256 launchTime
     );
+
+    function getPoolForToken(address token) external view returns (address pool);
 }
