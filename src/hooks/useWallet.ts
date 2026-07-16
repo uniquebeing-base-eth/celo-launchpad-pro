@@ -1,6 +1,7 @@
 import { useAccount, useDisconnect, useBalance, useChainId, useSwitchChain } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { celo } from 'wagmi/chains';
+import { celoSepolia } from '@/lib/wagmi';
 import { useCallback } from 'react';
 
 export function useWallet() {
