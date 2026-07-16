@@ -161,7 +161,7 @@ const TokenDetail = () => {
         <div className="bg-card rounded-xl p-4 shadow-card mb-6">
           <p className="text-sm text-muted-foreground mb-2">Creator Wallet</p>
           <button
-            onClick={() => window.open(`https://celoscan.io/address/${token.creator}`, '_blank')}
+            onClick={() => window.open(`https://celo-sepolia.blockscout.com/address/${token.creator}`, '_blank')}
             className="flex items-center gap-2 hover:text-primary transition-colors"
           >
             <span className="font-mono text-sm">{formatAddress(token.creator)}</span>
