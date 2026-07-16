@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useToast } from '@/hooks/use-toast';
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount } from 'wagmi';
+import { CONTRACTS, KABOOM_FACTORY_ABI } from '@/lib/wagmi';
 import { ArrowLeft, ArrowRight, Upload, AlertTriangle, Check, Info, ChevronDown, ChevronUp, Globe, Send, Twitter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -61,6 +64,8 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
     liquidityType: "amm",
   });
   const [isLaunching, setIsLaunching] = useState(false);
+  const { toast } = useToast();
+  const { address: account } = useAccount();
 
   const updateField = <K extends keyof TokenData>(field: K, value: TokenData[K]) => {
     setTokenData(prev => ({ ...prev, [field]: value }));
@@ -73,15 +78,71 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
     return true;
   };
 
+  const vaultDurationToSeconds = (d: TokenData['lockDuration']) => {
+    switch (d) {
+      case '7days': return 7 * 24 * 60 * 60;
+      case '1month': return 30 * 24 * 60 * 60;
+      case '6months': return 180 * 24 * 60 * 60;
+      case '1year': return 365 * 24 * 60 * 60;
+      default: return 0;
+    }
+  };
+
+  // Prepare contract write for launchToken
+  const creatorFeeBps = Math.floor(tokenData.creatorFee * 100);
+  const vaultDurationSeconds = vaultDurationToSeconds(tokenData.lockDuration);
+
+  const { config } = usePrepareContractWrite({
+    address: CONTRACTS.tokenFactory as `0x${string}`,
+    abi: KABOOM_FACTORY_ABI,
+    functionName: 'launchToken',
+    args: [
+      tokenData.name,
+      tokenData.symbol,
+      creatorFeeBps,
+      vaultDurationSeconds,
+      tokenData.twitterLink || '',
+      tokenData.telegramLink || '',
+      tokenData.websiteLink || '',
+      tokenData.farcasterLink || ''
+    ],
+    enabled: walletConnected && !!account,
+  });
+
+  const { write } = useContractWrite(config);
+  const { data: txData } = useWaitForTransaction({ hash: (write as any)?.hash });
+
   const handleLaunch = async () => {
     if (!walletConnected) {
       onConnectWallet();
       return;
     }
-    setIsLaunching(true);
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    setIsLaunching(false);
-    onClose();
+    if (!write) {
+      toast({ title: 'Unable to launch', description: 'Wallet not prepared or missing permissions', variant: 'destructive' });
+      return;
+    }
+
+    try {
+      setIsLaunching(true);
+      const pending = write();
+      toast({ title: 'Launching token', description: 'Transaction submitted — awaiting confirmation', });
+      const tx = await pending;
+      toast({ title: 'Transaction sent', description: tx.hash });
+      const receipt = await tx.wait();
+      if (receipt && receipt.status === 1) {
+        toast({ title: 'Launch successful', description: 'Token launched and pool created' });
+        // Refresh UI: simple approach - reload tokens list
+        window.location.reload();
+      } else {
+        toast({ title: 'Launch failed', description: 'Transaction reverted', variant: 'destructive' });
+      }
+    } catch (e: any) {
+      console.error('Launch error', e);
+      toast({ title: 'Launch error', description: e?.message || 'Unknown error', variant: 'destructive' });
+    } finally {
+      setIsLaunching(false);
+      onClose();
+    }
   };
 
   const renderStep1 = () => (

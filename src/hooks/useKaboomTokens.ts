@@ -3,6 +3,7 @@ import { usePublicClient } from 'wagmi';
 import { celoAlfajores } from 'wagmi/chains';
 import { CONTRACTS, KABOOM_FACTORY_ABI } from '@/lib/wagmi';
 import { formatUnits } from 'viem';
+import { ERC20_ABI } from '@/lib/wagmi';
 
 export interface KaboomTokenData {
   id: string;
@@ -77,11 +78,31 @@ export function useKaboomTokens() {
             // Mock price change based on time (in real app, fetch from price oracle)
             const priceChange = Math.sin(timeSinceLaunch / 1000) * 5;
 
+            // Fetch on-chain token name/symbol
+            let tokenName = 'Token';
+            let tokenSymbol = 'TKN';
+            try {
+              const nameRes = await publicClient.readContract({
+                address: tokenAddress as `0x${string}`,
+                abi: ERC20_ABI,
+                functionName: 'name',
+              }) as string;
+              const symRes = await publicClient.readContract({
+                address: tokenAddress as `0x${string}`,
+                abi: ERC20_ABI,
+                functionName: 'symbol',
+              }) as string;
+              tokenName = nameRes || tokenName;
+              tokenSymbol = symRes || tokenSymbol;
+            } catch (e) {
+              // fallback to defaults
+            }
+
             return {
               id: tokenAddress.slice(0, 10),
               address: tokenAddress,
-              name: 'Token', // Will need to fetch from token contract
-              symbol: 'TKN', // Will need to fetch from token contract
+              name: tokenName,
+              symbol: tokenSymbol,
               creator: info[0],
               lpVault: info[1],
               creatorVault: info[2],

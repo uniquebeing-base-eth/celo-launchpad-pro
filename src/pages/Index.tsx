@@ -20,6 +20,7 @@ const fallbackMockTokens: Token[] = [
 const Index = () => {
   const navigate = useNavigate();
   const { isConnected } = useWallet();
+  const { tokens, isLoading: tokensLoading } = useKaboomTokens();
   const [tradeToken, setTradeToken] = useState<Token | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -48,14 +49,14 @@ const Index = () => {
 
         {/* Top 24 Hour Volume - Carousel */}
         <TopVolumeSection
-          tokens={mockTrendingTokens}
+          tokens={tokens && tokens.length > 0 ? tokens as any : fallbackMockTokens}
           onBuy={handleBuy}
           onTokenClick={handleTokenClick}
         />
 
         {/* Token Table with Tabs */}
         <TokenTableSection
-          tokens={mockRecentTokens}
+          tokens={tokens && tokens.length > 0 ? tokens as any : fallbackMockTokens}
           onBuy={handleBuy}
           onTokenClick={handleTokenClick}
         />
