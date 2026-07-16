@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useToast } from '@/hooks/use-toast';
-import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useAccount } from 'wagmi';
+import { useSimulateContract, useWriteContract, useWaitForTransactionReceipt, useAccount } from 'wagmi';
 import { CONTRACTS, KABOOM_FACTORY_ABI } from '@/lib/wagmi';
 import { ArrowLeft, ArrowRight, Upload, AlertTriangle, Check, Info, ChevronDown, ChevronUp, Globe, Send, Twitter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -92,56 +92,61 @@ const CreateTokenModal = ({ isOpen, onClose, walletConnected, onConnectWallet }:
   const creatorFeeBps = Math.floor(tokenData.creatorFee * 100);
   const vaultDurationSeconds = vaultDurationToSeconds(tokenData.lockDuration);
 
-  const { config } = usePrepareContractWrite({
+  const { data: simulation } = useSimulateContract({
     address: CONTRACTS.tokenFactory as `0x${string}`,
     abi: KABOOM_FACTORY_ABI,
     functionName: 'launchToken',
     args: [
       tokenData.name,
       tokenData.symbol,
-      creatorFeeBps,
-      vaultDurationSeconds,
+      BigInt(creatorFeeBps),
+      BigInt(vaultDurationSeconds),
       tokenData.twitterLink || '',
       tokenData.telegramLink || '',
       tokenData.websiteLink || '',
-      tokenData.farcasterLink || ''
+      tokenData.farcasterLink || '',
     ],
-    enabled: walletConnected && !!account,
+    query: {
+      enabled: walletConnected && !!account && tokenData.name.length > 0 && tokenData.symbol.length > 0,
+    },
   });
 
-  const { write } = useContractWrite(config);
-  const { data: txData } = useWaitForTransaction({ hash: (write as any)?.hash });
+  const { writeContractAsync } = useWriteContract();
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+  const { data: receipt } = useWaitForTransactionReceipt({ hash: txHash });
 
   const handleLaunch = async () => {
     if (!walletConnected) {
       onConnectWallet();
       return;
     }
-    if (!write) {
-      toast({ title: 'Unable to launch', description: 'Wallet not prepared or missing permissions', variant: 'destructive' });
-      return;
-    }
 
     try {
       setIsLaunching(true);
-      const pending = write();
-      toast({ title: 'Launching token', description: 'Transaction submitted — awaiting confirmation', });
-      const tx = await pending;
-      toast({ title: 'Transaction sent', description: tx.hash });
-      const receipt = await tx.wait();
-      if (receipt && receipt.status === 1) {
-        toast({ title: 'Launch successful', description: 'Token launched and pool created' });
-        // Refresh UI: simple approach - reload tokens list
-        window.location.reload();
-      } else {
-        toast({ title: 'Launch failed', description: 'Transaction reverted', variant: 'destructive' });
-      }
+      const request = simulation?.request ?? {
+        address: CONTRACTS.tokenFactory as `0x${string}`,
+        abi: KABOOM_FACTORY_ABI,
+        functionName: 'launchToken' as const,
+        args: [
+          tokenData.name,
+          tokenData.symbol,
+          BigInt(creatorFeeBps),
+          BigInt(vaultDurationSeconds),
+          tokenData.twitterLink || '',
+          tokenData.telegramLink || '',
+          tokenData.websiteLink || '',
+          tokenData.farcasterLink || '',
+        ] as const,
+      };
+
+      const hash = await writeContractAsync(request as any);
+      setTxHash(hash);
+      toast({ title: 'Transaction sent', description: hash });
     } catch (e: any) {
       console.error('Launch error', e);
-      toast({ title: 'Launch error', description: e?.message || 'Unknown error', variant: 'destructive' });
+      toast({ title: 'Launch error', description: e?.shortMessage || e?.message || 'Unknown error', variant: 'destructive' });
     } finally {
       setIsLaunching(false);
-      onClose();
     }
   };
 
