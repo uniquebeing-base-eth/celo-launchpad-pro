@@ -46,14 +46,14 @@ const Index = () => {
 
         {/* Top 24 Hour Volume - Carousel */}
         <TopVolumeSection
-          tokens={tokens && tokens.length > 0 ? tokens as any : fallbackMockTokens}
+          tokens={(tokens || []) as any}
           onBuy={handleBuy}
           onTokenClick={handleTokenClick}
         />
 
         {/* Token Table with Tabs */}
         <TokenTableSection
-          tokens={tokens && tokens.length > 0 ? tokens as any : fallbackMockTokens}
+          tokens={(tokens || []) as any}
           onBuy={handleBuy}
           onTokenClick={handleTokenClick}
         />
