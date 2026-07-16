@@ -8,16 +8,7 @@ import { cn } from "@/lib/utils";
 import { Token } from "./TokenCard";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import HelpTutorialModal from "./HelpTutorialModal";
-
-// Mock tokens for search - in production, this would come from an API/blockchain
-const allTokens: Token[] = [
-  { id: "1", name: "BOOM", symbol: "BOOM", price: 8.39, priceChange: 2.1, pair: "USDC", creator: "0x1234...5678" },
-  { id: "2", name: "CLANK", symbol: "CLANK", price: 6.9, priceChange: -0.3, pair: "USDC", creator: "0x2345...6789" },
-  { id: "3", name: "THRYVE", symbol: "THRYVE", price: 0.8, priceChange: 5.2, pair: "USDC", creator: "0x3456...7890" },
-  { id: "4", name: "SCRT", symbol: "SCRT", price: 42.3, priceChange: 4.07, pair: "USDC", creator: "0x1234...5678" },
-  { id: "5", name: "BUZZ", symbol: "BUZZ", price: 82.8, priceChange: -0.8, pair: "USDC", creator: "0x4567...8901" },
-  { id: "6", name: "RPL", symbol: "RPL", price: 12.5, priceChange: 1.2, pair: "USDC", creator: "0x5678...9012" },
-];
+import { useKaboomTokens } from "@/hooks/useKaboomTokens";
 
 interface HeaderProps {
   onCreateToken: () => void;
