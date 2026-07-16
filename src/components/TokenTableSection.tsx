@@ -41,16 +41,30 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
       : <ChevronUp className="h-3 w-3" />;
   };
 
-  // Extended mock data for the table
-  const tableData = tokens.map((token, index) => ({
+  // Build table rows from real on-chain token data.
+  const formatCreator = (addr?: string) =>
+    addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "—";
+  const formatMcap = (mc?: number) => {
+    if (!mc || mc <= 0) return "—";
+    if (mc >= 1_000_000) return `$${(mc / 1_000_000).toFixed(2)}M`;
+    if (mc >= 1_000) return `$${(mc / 1_000).toFixed(1)}K`;
+    return `$${mc.toFixed(0)}`;
+  };
+  const tableData = tokens.map((token) => ({
     ...token,
-    change1h: (Math.random() * 10 - 5).toFixed(1),
-    change6h: (Math.random() * 15 - 7.5).toFixed(1),
-    change24h: token.priceChange.toFixed(1),
-    volume24h: `$${(Math.random() * 600 + 10).toFixed(1)}k`,
-    mcap: `$${(Math.random() * 25 + 1).toFixed(1)}M`,
-    creator: `@user${index + 1}`,
+    change1h: "0.0",
+    change6h: "0.0",
+    change24h: (token.priceChange ?? 0).toFixed(1),
+    volume24h: token.volume ? `$${token.volume}` : "$0",
+    mcap: formatMcap(token.marketCap),
+    creator: formatCreator(token.creator),
   }));
+
+  const sortedData = [...tableData];
+  if (activeTab === "new") {
+    // New Boomers: newest first by launchTime if present, otherwise reverse insertion.
+    sortedData.sort((a: any, b: any) => (b.launchTime ?? 0) - (a.launchTime ?? 0));
+  }
 
   return (
     <section className="py-6">
