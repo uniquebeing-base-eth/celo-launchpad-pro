@@ -168,7 +168,7 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
 
           {/* Table Body */}
           <div className="divide-y divide-border">
-            {tableData.map((token) => (
+            {sortedData.map((token) => (
               <div
                 key={token.id}
                 className="grid grid-cols-12 gap-2 px-4 py-3 items-center hover:bg-muted/50 cursor-pointer transition-colors"
@@ -240,7 +240,7 @@ const TokenTableSection = ({ tokens, onBuy, onTokenClick }: TokenTableSectionPro
 
         {/* Mobile Cards */}
         <div className="md:hidden space-y-3">
-          {tableData.map((token) => (
+          {sortedData.map((token) => (
             <div
               key={token.id}
               className="bg-card rounded-xl p-4 shadow-card cursor-pointer hover:bg-muted/50 transition-colors"
