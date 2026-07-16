@@ -12,10 +12,7 @@ import { Token } from "@/components/TokenCard";
 import { useWallet } from "@/hooks/useWallet";
 import { useKaboomTokens } from "@/hooks/useKaboomTokens";
 
-// Fallback mock data for when no tokens are deployed
-const fallbackMockTokens: Token[] = [
-  { id: "1", name: "No Tokens Yet", symbol: "---", price: 0, priceChange: 0, pair: "USDC", volume: "0k", creator: "0x0000000000000000000000000000000000000000", contractAddress: "---", marketCap: 0 },
-];
+// No fallback mock data — show only real on-chain tokens.
 
 const Index = () => {
   const navigate = useNavigate();
@@ -49,14 +46,14 @@ const Index = () => {
 
         {/* Top 24 Hour Volume - Carousel */}
         <TopVolumeSection
-          tokens={tokens && tokens.length > 0 ? tokens as any : fallbackMockTokens}
+          tokens={(tokens || []) as any}
           onBuy={handleBuy}
           onTokenClick={handleTokenClick}
         />
 
         {/* Token Table with Tabs */}
         <TokenTableSection
-          tokens={tokens && tokens.length > 0 ? tokens as any : fallbackMockTokens}
+          tokens={(tokens || []) as any}
           onBuy={handleBuy}
           onTokenClick={handleTokenClick}
         />

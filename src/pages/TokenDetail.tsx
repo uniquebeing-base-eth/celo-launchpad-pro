@@ -8,38 +8,66 @@ import TradeModal from "@/components/TradeModal";
 import PriceChart from "@/components/PriceChart";
 import { Token } from "@/components/TokenCard";
 import { useWallet } from "@/hooks/useWallet";
+import { useKaboomTokens } from "@/hooks/useKaboomTokens";
 import kaboomLogo from "@/assets/kaboom-logo.png";
-
-// Mock token data - in production, fetch from blockchain
-const mockTokenDetail = {
-  id: "1",
-  name: "BOOM Coin",
-  symbol: "BOOM",
-  logo: null,
-  price: 3.3,
-  priceChange: 6.5,
-  pair: "wCELO",
-  contractAddress: "0x1234567890abcdef1234567890abcdef12345678",
-  totalSupply: "1,000,000,000",
-  marketCap: 3300000,
-  poolPercent: 72.3,
-  vaultPercent: 27.7,
-  vaultLocked: "277,000,000",
-  amountLocked: 915100000, // In token units
-  holders: 1247,
-  creator: "0x9876543210fedcba9876543210fedcba98765432",
-  lpLocked: true,
-  liquidityType: "AMM" as const,
-};
 
 const TokenDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isConnected, address } = useWallet();
+  const { tokens, isLoading } = useKaboomTokens();
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const token = mockTokenDetail; // In real app, fetch by id
+  // Match by id (short prefix) or full address
+  const real = tokens.find(
+    (t) => t.id === id || t.address?.toLowerCase() === id?.toLowerCase()
+  );
+
+  if (isLoading && !real) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onCreateToken={() => navigate("/")} />
+        <div className="container px-4 py-10 text-center text-muted-foreground">
+          Loading token…
+        </div>
+      </div>
+    );
+  }
+
+  if (!real) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header onCreateToken={() => navigate("/")} />
+        <div className="container px-4 py-10 text-center text-muted-foreground">
+          Token not found on-chain.
+        </div>
+      </div>
+    );
+  }
+
+  const totalSupplyNum = 50_000_000_000;
+  const lockedNum = totalSupplyNum * 0.7;
+  const token = {
+    id: real.id,
+    name: real.name,
+    symbol: real.symbol,
+    logo: null as string | null,
+    price: real.price,
+    priceChange: real.priceChange,
+    pair: "wCELO",
+    contractAddress: real.address,
+    totalSupply: totalSupplyNum.toLocaleString(),
+    marketCap: Number(real.virtualMarketCap) || real.marketCap,
+    poolPercent: 70,
+    vaultPercent: 30,
+    vaultLocked: (totalSupplyNum * 0.3).toLocaleString(),
+    amountLocked: lockedNum,
+    holders: 0,
+    creator: real.creator,
+    lpLocked: true,
+    liquidityType: "AMM" as const,
+  };
   const isCreator = address?.toLowerCase() === token.creator.toLowerCase();
 
   const handleCopyAddress = () => {
@@ -133,7 +161,7 @@ const TokenDetail = () => {
         <div className="bg-card rounded-xl p-4 shadow-card mb-6">
           <p className="text-sm text-muted-foreground mb-2">Creator Wallet</p>
           <button
-            onClick={() => window.open(`https://celoscan.io/address/${token.creator}`, '_blank')}
+            onClick={() => window.open(`https://celo-sepolia.blockscout.com/address/${token.creator}`, '_blank')}
             className="flex items-center gap-2 hover:text-primary transition-colors"
           >
             <span className="font-mono text-sm">{formatAddress(token.creator)}</span>

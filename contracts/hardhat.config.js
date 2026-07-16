@@ -18,10 +18,15 @@ module.exports = {
     hardhat: {
       chainId: 31337,
     },
-    alfajores: {
-      url: process.env.ALFAJORES_RPC_URL || "https://forno.celo-sepolia.celo-testnet.org",
+    celoSepolia: {
+      url: process.env.CELO_SEPOLIA_RPC_URL || "https://forno.celo-sepolia.celo-testnet.org",
       accounts: [PRIVATE_KEY],
       chainId: 11142220,
+    },
+    alfajores: {
+      url: process.env.ALFAJORES_RPC_URL || "https://alfajores-forno.celo-testnet.org",
+      accounts: [PRIVATE_KEY],
+      chainId: 44787,
     },
     celo: {
       url: "https://forno.celo.org",
@@ -31,8 +36,9 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      celo: process.env.CELOSCAN_API_KEY || "",
-      alfajores: process.env.CELOSCAN_API_KEY || "",
+      celo: process.env.CELOSCAN_API_KEY || process.env.ETHERSCAN_API_KEY || "",
+      alfajores: process.env.CELOSCAN_API_KEY || process.env.ETHERSCAN_API_KEY || "",
+      celoSepolia: process.env.CELOSCAN_API_KEY || process.env.ETHERSCAN_API_KEY || "",
     },
     customChains: [
       {
@@ -49,6 +55,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-alfajores.celoscan.io/api",
           browserURL: "https://alfajores.celoscan.io",
+        },
+      },
+      {
+        network: "celoSepolia",
+        chainId: 11142220,
+        urls: {
+          apiURL: "https://celo-sepolia.blockscout.com/api",
+          browserURL: "https://celo-sepolia.blockscout.com",
         },
       },
     ],

@@ -73,10 +73,8 @@ export function useKaboomTokens() {
 
             const virtualPrice = Number(formatUnits(BigInt(info[3]), 18));
             const launchTime = Number(info[6]);
-            const timeSinceLaunch = Date.now() / 1000 - launchTime;
-            
-            // Mock price change based on time (in real app, fetch from price oracle)
-            const priceChange = Math.sin(timeSinceLaunch / 1000) * 5;
+            // Real price change would come from a price oracle / indexer; default 0 until wired.
+            const priceChange = 0;
 
             // Fetch on-chain token name/symbol
             let tokenName = 'Token';
