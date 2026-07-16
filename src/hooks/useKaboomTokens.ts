@@ -33,7 +33,7 @@ export function useKaboomTokens() {
   const [tokens, setTokens] = useState<KaboomTokenData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const publicClient = usePublicClient({ chainId: celoAlfajores.id }) as any;
+  const publicClient = usePublicClient({ chainId: celoSepolia.id }) as any;
 
   useEffect(() => {
     if (!publicClient) return;
