@@ -23,7 +23,7 @@ export function useWallet() {
 
   const ensureCeloNetwork = useCallback(async () => {
     const validChains = [celo.id, celoSepolia.id];
-    if (!validChains.includes(chainId) && switchChain) {
+    if (!validChains.includes(chainId as any) && switchChain) {
       try {
         // Prefer testnet (Celo Sepolia) since that's where contracts are deployed.
         switchChain({ chainId: celoSepolia.id });
